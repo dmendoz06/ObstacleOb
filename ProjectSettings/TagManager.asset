@@ -8,6 +8,10 @@ TagManager:
   - Slide
   - Wall
   - PushBody
+  - hit
+  - checkPoint
+  - Checkpoint
+  - Death
   layers:
   - Default
   - TransparentFX

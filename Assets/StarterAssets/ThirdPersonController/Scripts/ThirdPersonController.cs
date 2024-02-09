@@ -128,6 +128,8 @@ namespace StarterAssets
 
         private void Awake()
         {
+            checkPoint = transform.position;
+
             // get a reference to our main camera
             if (_mainCamera == null)
             {
@@ -168,6 +170,22 @@ namespace StarterAssets
         {
             CameraRotation();
         }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.tag == "Death")
+            {
+                this.GetComponent<CharacterController>().enabled = false;
+                transform.position = checkPoint;
+                this.GetComponent<CharacterController>().enabled = true;
+            }
+
+            if (other.gameObject.tag == "Checkpoint")
+            {
+                checkPoint = other.transform.position;
+            }
+        }
+
 
         private void AssignAnimationIDs()
         {
