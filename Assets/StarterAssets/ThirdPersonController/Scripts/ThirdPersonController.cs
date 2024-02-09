@@ -87,6 +87,9 @@ namespace StarterAssets
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
 
+        [SerializeField]
+        private Vector3 checkPoint;
+
         // timeout deltatime
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
@@ -117,7 +120,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
                 return _playerInput.currentControlScheme == "KeyboardMouse";
 #else
-				return false;
+                return false;
 #endif
             }
         }
@@ -125,6 +128,8 @@ namespace StarterAssets
 
         private void Awake()
         {
+            checkPoint = transform.position;
+
             // get a reference to our main camera
             if (_mainCamera == null)
             {
@@ -135,14 +140,14 @@ namespace StarterAssets
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM 
+#if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
 #else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
+            Debug.LogError("Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
 
             AssignAnimationIDs();
@@ -165,6 +170,22 @@ namespace StarterAssets
         {
             CameraRotation();
         }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.tag == "Death")
+            {
+                this.GetComponent<CharacterController>().enabled = false;
+                transform.position = checkPoint;
+                this.GetComponent<CharacterController>().enabled = true;
+            }
+
+            if (other.gameObject.tag == "Checkpoint")
+            {
+                checkPoint = other.transform.position;
+            }
+        }
+
 
         private void AssignAnimationIDs()
         {
